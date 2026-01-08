@@ -1,6 +1,15 @@
 <div align="center">
 
-![X-Gate Logo](/Users/ankit/.gemini/antigravity/brain/db3f5f74-a1ac-4ad6-b7d3-18439c801ed1/x_gate_logo_1767850932147.png)
+<div align="center">
+
+```text
+██╗  ██╗       ██████╗  █████╗ ████████╗███████╗
+╚██╗██╔╝      ██╔════╝ ██╔══██╗╚══██╔══╝██╔════╝
+ ╚███╔╝ █████╗██║  ███╗███████║   ██║   █████╗  
+ ██╔██╗ ╚════╝██║   ██║██╔══██║   ██║   ██╔══╝  
+██╔╝ ██╗      ╚██████╔╝██║  ██║   ██║   ███████╗
+╚═╝  ╚═╝       ╚═════╝ ╚═╝  ╚═╝   ╚═╝   ╚══════╝
+```
 
 # X-Gate
 ### The Ultimate Telegram Guardian for X Links
@@ -72,6 +81,6 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 
 ---
 <div align="center">
-  <sub>Built with ❤️ by X-Gate Team</sub>
+  <sub>Built with ❤️ by <a href="https://x.com/ankitkr0">Ankit</a></sub>
 </div>
-# XGate
+

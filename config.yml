@@ -1,0 +1,13 @@
+telegram:
+  bot_token: "YOUR_BOT_TOKEN_HERE"
+
+rules:
+  max_links_per_week: 3
+  require_context: true
+  min_context_length: 30
+  count_per_link: true
+
+messages:
+  rate_limit: "⚠️ You've hit your weekly limit ({max} X links per week)"
+  no_context: "⚠️ X links require context (minimum {min} characters)"
+  approaching_limit: "ℹ️ You have {remaining} X link(s) remaining this week"
