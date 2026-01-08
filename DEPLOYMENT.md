@@ -95,7 +95,7 @@ curl -fsSL https://get.docker.com -o get-docker.sh
 sh get-docker.sh
 
 # Clone and deploy
-git clone https://github.com/yourusername/x-gate.git
+git clone https://github.com/randomness11/x-gate.git
 cd x-gate
 
 # Create .env file
@@ -119,7 +119,7 @@ sudo apt update
 sudo apt install python3.11 python3-pip -y
 
 # Clone repository
-git clone https://github.com/yourusername/x-gate.git
+git clone https://github.com/randomness11/x-gate.git
 cd x-gate
 
 # Run setup

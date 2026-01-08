@@ -35,7 +35,7 @@ This is the **fastest** way to get X-Gate running 24/7.
 
 ```bash
 # 1. Clone and setup
-git clone https://github.com/yourusername/x-gate.git
+git clone https://github.com/randomness11/x-gate.git
 cd x-gate
 chmod +x setup.sh
 ./setup.sh
@@ -60,7 +60,7 @@ chmod +x setup.sh
 
 ```bash
 # 1. Clone repo
-git clone https://github.com/yourusername/x-gate.git
+git clone https://github.com/randomness11/x-gate.git
 cd x-gate
 
 # 2. Create .env file

@@ -30,7 +30,7 @@
 **Or run this:**
 
 ```bash
-git clone https://github.com/yourusername/x-gate.git
+git clone https://github.com/randomness11/x-gate.git
 cd x-gate
 chmod +x setup.sh && ./setup.sh
 ```
@@ -78,7 +78,7 @@ Just click, add your bot token, and deploy. **Free tier included!**
 
 1. **Clone and run the setup script**
    ```bash
-   git clone https://github.com/yourusername/x-gate.git
+   git clone https://github.com/randomness11/x-gate.git
    cd x-gate
    chmod +x setup.sh
    ./setup.sh
