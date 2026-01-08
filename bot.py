@@ -12,6 +12,7 @@ from telegram.ext import (
     Application,
     MessageHandler,
     CommandHandler,
+    ChatMemberHandler,
     ContextTypes,
     filters
 )
@@ -99,9 +100,17 @@ class XLinkModerator:
 
         if not has_permission:
             logger.warning(f"Bot lacks delete permissions in chat {chat_id}")
-            # Optionally send a message to admins
+            # Send helpful setup instructions
             await message.reply_text(
-                "⚠️ Bot needs admin permissions with 'Delete Messages' enabled to moderate links."
+                "⚠️ **I need admin permissions to moderate links!**\n\n"
+                "**Quick fix:**\n"
+                "1. Tap the group name at the top\n"
+                "2. Tap 'Edit' or Settings icon\n"
+                "3. Tap 'Administrators'\n"
+                "4. Add me as an administrator\n"
+                "5. Enable 'Delete Messages' ✓\n\n"
+                "After setup, type /diagnose to verify!",
+                parse_mode='Markdown'
             )
             return
 
@@ -222,10 +231,100 @@ class XLinkModerator:
             f"• Remaining: {remaining}"
         )
 
+    async def diagnose_command(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle /diagnose command - check if bot is configured correctly."""
+        chat = update.message.chat
+
+        # Check if it's a group
+        if chat.type not in ['group', 'supergroup']:
+            await update.message.reply_text(
+                "❌ This bot only works in groups!\n\n"
+                "Please add me to a group first."
+            )
+            return
+
+        report = "🔍 **Diagnostic Report**\n\n"
+
+        # Check bot permissions
+        try:
+            bot_id = (await context.bot.get_me()).id
+            member = await chat.get_member(bot_id)
+
+            if member.status in ['administrator']:
+                if hasattr(member, 'can_delete_messages') and member.can_delete_messages:
+                    report += "✅ Bot is admin with delete permissions\n"
+                else:
+                    report += "❌ Bot is admin but **CANNOT delete messages**\n"
+                    report += "   **Fix:** Give bot 'Delete Messages' permission\n"
+                    report += "   1. Tap group name → Edit → Administrators\n"
+                    report += "   2. Tap the bot → Enable 'Delete Messages'\n"
+            else:
+                report += "❌ Bot is **NOT an administrator**\n"
+                report += "   **Fix:** Make the bot an admin\n"
+                report += "   1. Tap group name → Edit → Administrators\n"
+                report += "   2. Tap 'Add Administrator' → Select the bot\n"
+                report += "   3. Enable 'Delete Messages' permission\n"
+        except TelegramError as e:
+            report += f"❌ Could not check permissions: {e}\n"
+
+        # Check database
+        try:
+            test_count = self.db.count_user_links_last_week(update.message.from_user.id, chat.id)
+            report += "✅ Database is working\n"
+        except Exception as e:
+            report += f"❌ Database error: {e}\n"
+
+        # Show current settings
+        report += f"\n⚙️ **Current Settings:**\n"
+        report += f"• Max links per week: {self.config.max_links_per_week}\n"
+        report += f"• Context required: {'Yes' if self.config.require_context else 'No'}\n"
+        if self.config.require_context:
+            report += f"• Min context length: {self.config.min_context_length} chars\n"
+        report += f"• Count each link: {'Yes' if self.config.count_per_link else 'No (one per message)'}\n"
+
+        # Test link detection
+        report += f"\n🧪 **Test Link Detection:**\n"
+        report += "Try posting this test link with context:\n"
+        report += "`This is interesting: https://x.com/test/status/123`\n"
+
+        await update.message.reply_text(report, parse_mode='Markdown')
+
+    async def my_chat_member_updated(self, update: Update, context: ContextTypes.DEFAULT_TYPE):
+        """Handle bot being added to or removed from a group."""
+        status_change = update.my_chat_member
+        old_status = status_change.old_chat_member.status
+        new_status = status_change.new_chat_member.status
+
+        # Bot was added to group
+        if old_status not in ['member', 'administrator'] and new_status in ['member', 'administrator']:
+            await context.bot.send_message(
+                chat_id=update.effective_chat.id,
+                text=(
+                    "👋 **Thanks for adding X-Gate!**\n\n"
+                    "**Quick Setup (30 seconds):**\n"
+                    "1. Make me an admin\n"
+                    "2. Enable 'Delete Messages' permission\n"
+                    "3. Done! I'll start moderating X links\n\n"
+                    "**Commands:**\n"
+                    "• /start - View rules\n"
+                    "• /stats - Check your usage\n"
+                    "• /diagnose - Test configuration\n\n"
+                    "**Default Rules:**\n"
+                    f"• Max {self.config.max_links_per_week} X links per week per user\n"
+                    f"• Links must have {self.config.min_context_length}+ characters of context\n\n"
+                    "Type /diagnose to verify I'm set up correctly!"
+                ),
+                parse_mode='Markdown'
+            )
+
 
 def main():
     """Main function to run the bot."""
     try:
+        # Load environment variables from .env file if it exists
+        from dotenv import load_dotenv
+        load_dotenv()
+
         # Load configuration
         config = Config()
         logger.info("Configuration loaded successfully")
@@ -249,9 +348,12 @@ def main():
         # Add handlers
         application.add_handler(CommandHandler("start", moderator.start_command))
         application.add_handler(CommandHandler("stats", moderator.stats_command))
+        application.add_handler(CommandHandler("diagnose", moderator.diagnose_command))
         application.add_handler(
             MessageHandler(filters.TEXT & ~filters.COMMAND, moderator.handle_message)
         )
+        # Handle bot being added to groups
+        application.add_handler(ChatMemberHandler(moderator.my_chat_member_updated, ChatMemberHandler.MY_CHAT_MEMBER))
 
         logger.info("Bot started successfully. Press Ctrl+C to stop.")
 

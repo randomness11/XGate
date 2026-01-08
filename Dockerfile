@@ -12,7 +12,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY bot.py .
 COPY database.py .
 COPY config.py .
-COPY config.yml .
+
+# Copy config.yml only if it exists (optional, since we support env var only)
+COPY config.yml* ./ || true
 
 # Create volume for database persistence
 VOLUME /app/data

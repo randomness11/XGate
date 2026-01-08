@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: x-gate-bot
+    env: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    envVars:
+      - key: TELEGRAM_BOT_TOKEN
+        sync: false
+      - key: DB_PATH
+        value: /app/data/bot_data.db
+    disk:
+      name: bot-data
+      mountPath: /app/data
+      sizeGB: 1

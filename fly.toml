@@ -1,0 +1,13 @@
+app = "x-gate"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  DB_PATH = "/app/data/bot_data.db"
+
+[mounts]
+  source = "bot_data"
+  destination = "/app/data"
+  initial_size = "1gb"

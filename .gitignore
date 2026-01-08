@@ -25,6 +25,7 @@ data/
 
 # Config - users should customize config.yml with their token
 # Don't commit your actual bot token!
+.env
 
 # Docker
 .dockerignore
