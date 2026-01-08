@@ -186,7 +186,11 @@ rules:
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+Contributions are welcome! Please read our [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) to get started.
+
+## 🔐 Security
+
+Policy on reporting security vulnerabilities can be found in [SECURITY.md](SECURITY.md).
 
 ## 📄 License
 
